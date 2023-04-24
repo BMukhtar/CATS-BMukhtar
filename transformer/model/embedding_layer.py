@@ -23,7 +23,7 @@ import tensorflow as tf  # pylint: disable=g-bad-import-order
 from transformer.model import model_utils
 
 
-class EmbeddingSharedWeights(tf.layers.Layer):
+class EmbeddingSharedWeights(tf.keras.layers.Layer):
   """Calculates input embeddings and pre-softmax linear with shared weights."""
 
   def __init__(self, vocab_size, hidden_size, method="gather"):

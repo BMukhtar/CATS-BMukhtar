@@ -21,7 +21,7 @@ from __future__ import print_function
 import tensorflow as tf
 
 
-class FeedFowardNetwork(tf.layers.Layer):
+class FeedFowardNetwork(tf.keras.layers.Layer):
   """Fully connected feedforward network."""
 
   def __init__(self, hidden_size, filter_size, relu_dropout, train, allow_pad):
@@ -32,9 +32,9 @@ class FeedFowardNetwork(tf.layers.Layer):
     self.train = train
     self.allow_pad = allow_pad
 
-    self.filter_dense_layer = tf.layers.Dense(
+    self.filter_dense_layer = tf.keras.layers.Dense(
         filter_size, use_bias=True, activation=tf.nn.relu, name="filter_layer")
-    self.output_dense_layer = tf.layers.Dense(
+    self.output_dense_layer = tf.keras.layers.Dense(
         hidden_size, use_bias=True, name="output_layer")
 
   def call(self, x, padding=None):
