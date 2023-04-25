@@ -5,6 +5,7 @@ import pickle
 import numpy as np
 
 import config
+import json
 
 
 def load_txt_file(path):
@@ -14,7 +15,7 @@ def load_lines(path):
   return [l.strip() for l in list(codecs.open(path, "r", encoding = 'utf8', errors = 'replace').readlines())]
 
 def load_vocab(path):
-  return pickle.load(open(path,"rb"))
+  return json.load(open(path,"rb"))
 
 def load_vectors(path):
   return np.load(path)

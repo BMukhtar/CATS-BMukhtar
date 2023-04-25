@@ -12,40 +12,41 @@ def tokenize(string):
 def sentence_split(text):
   return sent_tokenize(text)  
 
+import os
 def create_instances(dir_path, vocab, records_path, test = False, title_start = "========,", ssplit = True):
-  writer = tf.python_io.TFRecordWriter(records_path)
-  files = []
-  utils.get_files_recursive(dir_path, files)
-  print("Found " + str(len(files)) + " text files.")
-  cnt = 0
-  total = 0
+  with tf.io.TFRecordWriter(records_path) as writer:
+    files = []
+    utils.get_files_recursive(dir_path, files)
+    print("Found " + str(len(files)) + " text files.")
+    cnt = 0
+    total = 0
 
-  if test:
-    doc_blocks = []
-
-  for f in files:
-    cnt += 1
-    print("File: " + str(cnt))
-    records, rb_num, windows = process_document(f, vocab, test = test, title_start = title_start, ssplit = ssplit)
     if test:
-      doc_blocks.append((f, windows))
-    total += rb_num
-    for r in records:
-      writer.write(r.SerializeToString())
-    if cnt % 10 == 0:
-      print("Current num. blocks: " + str(total))
-  print("Total training blocks: " + str(total))
+      doc_blocks = []
 
-  if test: 
-    fake_ids = to_token_ids([(config.fake_sent, 0)], vocab)[0]
-    print(fake_ids)
-    print(total)
-    fake_recs = (config.batch_size - (total % config.batch_size)) * config.sent_window
-    print(fake_recs)
-    for i in range(fake_recs):
-      fr = fake_record(fake_ids)
-      writer.write(fr.SerializeToString())
-    return doc_blocks, fake_recs
+    for f in files:
+      cnt += 1
+      print("File: " + str(cnt))
+      records, rb_num, windows = process_document(f, vocab, test = test, title_start = title_start, ssplit = ssplit)
+      if test:
+        doc_blocks.append((f, windows))
+      total += rb_num
+      for r in records:
+        writer.write(r.SerializeToString())
+      if cnt % 10 == 0:
+        print("Current num. blocks: " + str(total))
+    print("Total training blocks: " + str(total))
+
+    if test:
+      fake_ids = to_token_ids([(config.fake_sent, 0)], vocab)[0]
+      print(fake_ids)
+      print(total)
+      fake_recs = (config.batch_size - (total % config.batch_size)) * config.sent_window
+      print(fake_recs)
+      for i in range(fake_recs):
+        fr = fake_record(fake_ids)
+        writer.write(fr.SerializeToString())
+      return doc_blocks, fake_recs
   
 def process_document(path, vocab, title_start = "========,", forbidden_start = "***LIST***", test = False, ssplit = True):
   print("ssplit: " + str(ssplit))
