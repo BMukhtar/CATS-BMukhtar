@@ -10,6 +10,12 @@ for word in model.words:
     vocab[word] = len(vocab)
     vectors.append(model[word])
 
+# add special tokens to vocab pad, unk, sos, eos
+tokens = ["<PAD>", "<UNK>", "<SOS>", "<EOS>", "<S/>"]
+for token in tokens:
+    vocab[token] = len(vocab)
+    vectors.append(np.random.rand(config.vecs_dim))
+
 with open(config.vocab_path_en, 'w') as f:
     json.dump(vocab, f, indent=4)
 
