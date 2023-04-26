@@ -11,7 +11,7 @@ for word in model.words:
     vectors.append(model[word])
 
 # add special tokens to vocab pad, unk, sos, eos
-tokens = ["<PAD>", "<UNK>", "<SOS>", "<EOS>", "<S/>"]
+tokens = ["<PAD>", "<UNK>", "<SOS>", "<EOS>", "<S/>", "<SS>", "<SSS>"]
 for token in tokens:
     vocab[token] = len(vocab)
     vectors.append(np.random.rand(config.vecs_dim))
