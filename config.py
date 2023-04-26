@@ -96,6 +96,6 @@ SENT_TRANS_PARAMS_PREDICT_TLT = {"num_hidden_layers": 6,
                                  }
 
 # training
-tfrec_train = ""
+tfrec_train = "{}/data/output/records.tf".format(MODEL_PATH)
 EPOCHS = 100
 SAVE_CHECKPOINT_STEPS = 500

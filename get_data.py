@@ -15,15 +15,15 @@ def get_data(path, is_train = True, epochs = 1):
   dataset = _get_dataset([path], is_train = is_train, epochs = epochs, deserialize_fn = deserialize_data)
   dataset = dataset.batch(config.batch_size * config.sent_window, drop_remainder=True)     
   dataset = dataset.prefetch(5)
-  # dataset = dataset.make_one_shot_iterator().get_next()
-  #
-  # features = {
-  #  'seg_lab': dataset['seg_lab'],
-  #  'true_seqs': dataset['true_seqs'],
-  #  'fake_seqs': dataset['fake_seqs'],
-  # }
+  dataset = tf.compat.v1.data.make_one_shot_iterator(dataset).get_next()
 
-  return dataset.element_spec, None
+  features = {
+   'seg_lab': dataset['seg_lab'],
+   'true_seqs': dataset['true_seqs'],
+   'fake_seqs': dataset['fake_seqs'],
+  }
+
+  return features, None
   
 def deserialize_data(example_proto):
   context_features = {
@@ -43,3 +43,6 @@ def deserialize_data(example_proto):
 
   features = dict(sequence_parsed, **context_parsed)  # merging the two dicts
   return features
+
+# print(get_data('data/output/records.tf'))
+#%%
