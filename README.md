@@ -107,6 +107,10 @@ For the training of the models, it is recommended to have access to Graphical Pr
 
 ## Quick Start
 
+```mac os
+conda install -c apple tensorflow-deps
+```
+
 ```sh
 python preprocess_fasttext_vec.py
 python cats_preprocess.py data/input data/output --train 1
