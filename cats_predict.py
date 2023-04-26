@@ -15,8 +15,8 @@ def predict(input_dir, output_dir, embeddings, vocabulary, scores=False):
     dirname = os.path.dirname(os.path.realpath(__file__))
     print(dirname)
 
-    blocks_path = os.path.join(input_dir, "blocks.pkl")
-    records_path = os.path.join(input_dir, "records.tf")
+    blocks_path = os.path.join(input_dir, config.data_preprocessed_blocks_file)
+    records_path = os.path.join(input_dir, config.data_preprocessed_records_file)
     write_pred_score = (scores is True)
 
     print("Defining estimator...")
