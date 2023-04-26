@@ -12,7 +12,7 @@ fin = io.open(config.vec_path_en, 'r', encoding='utf-8', newline='\n', errors='i
 n, d = map(int, fin.readline().split())
 assert d == config.vecs_dim
 counter = 0
-for line in tqdm(fin):
+for line in tqdm(fin, total=n):
     tokens = line.rstrip().split(' ')
     vector = list(map(float, tokens[1:]))
     assert len(vector) == config.vecs_dim
@@ -21,7 +21,7 @@ for line in tqdm(fin):
     counter += 1
 
 # add special tokens to vocab pad, unk, sos, eos
-tokens = ["<PAD>", "<UNK>", "<SOS>", "<EOS>", "<S/>"]
+tokens = ["<PAD>", "<UNK>", "<SOS>", "<EOS>", "<S/>", "<SS>", "<SSS>"]
 for token in tokens:
     vocab[token] = len(vocab)
     vectors.append(np.random.rand(config.vecs_dim))
