@@ -103,3 +103,11 @@ For the training of the models, it is recommended to have access to Graphical Pr
 ## Unit Tests
 
 * `nosetests -v tests/test_segmentation.py`
+
+
+## Quick Start
+
+
+python preprocess_fasttext_vec.py
+python cats_preprocess.py data/input data/output --train 1
+python cats_train.py
