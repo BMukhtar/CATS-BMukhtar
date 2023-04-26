@@ -12,9 +12,14 @@ MODEL_PATH = "."
 
 """
 Download bin from fasttext website,
-then use preprocess_fasttext.py to create vocab and vectors
+then use preprocess_fasttext_bin.py to create vocab and vectors
 """
 bin_path_en = "{}/data/embeddings/en.bin".format(MODEL_PATH)
+"""
+Download bin from fasttext website,
+then use preprocess_fasttext_vec.py to create vocab and vectors
+"""
+vec_path_en = "{}/data/embeddings/en.vec".format(MODEL_PATH)
 vocab_path_en = "{}/data/embeddings/en.vocab".format(MODEL_PATH)
 vecs_path_en = "{}/data/embeddings/en.vectors".format(MODEL_PATH)
 
