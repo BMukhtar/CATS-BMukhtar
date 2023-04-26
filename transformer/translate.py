@@ -44,7 +44,7 @@ def _get_sorted_inputs(filename):
     Sorted list of inputs, and dictionary mapping original index->sorted index
     of each element.
   """
-  with tf.gfile.Open(filename) as f:
+  with tf.io.gfile.GFile(filename) as f:
     records = f.read().split("\n")
     inputs = [record.strip() for record in records]
     if not inputs[-1]:
@@ -104,7 +104,7 @@ def translate_file(
       if i % batch_size == 0:
         batch_num = (i // batch_size) + 1
 
-        tf.logging.info("Decoding batch %d out of %d." %
+        tf.compat.v1.logging.info("Decoding batch %d out of %d." %
                         (batch_num, num_decode_batches))
       yield _encode_and_add_eos(line, subtokenizer)
 
@@ -121,16 +121,16 @@ def translate_file(
     translations.append(translation)
 
     if print_all_translations:
-      tf.logging.info("Translating:\n\tInput: %s\n\tOutput: %s" %
+      tf.compat.v1.logging.info("Translating:\n\tInput: %s\n\tOutput: %s" %
                       (sorted_inputs[i], translation))
 
   # Write translations in the order they appeared in the original file.
   if output_file is not None:
-    if tf.gfile.IsDirectory(output_file):
+    if tf.io.gfile.isdir(output_file):
       raise ValueError("File output is a directory, will not save outputs to "
                        "file.")
-    tf.logging.info("Writing to file %s" % output_file)
-    with tf.gfile.Open(output_file, "w") as f:
+    tf.compat.v1.logging.info("Writing to file %s" % output_file)
+    with tf.io.gfile.GFile(output_file, "w") as f:
       for i in sorted_keys:
         f.write("%s\n" % translations[i])
 
@@ -147,16 +147,16 @@ def translate_text(estimator, subtokenizer, txt):
   predictions = estimator.predict(input_fn)
   translation = next(predictions)["outputs"]
   translation = _trim_and_decode(translation, subtokenizer)
-  tf.logging.info("Translation of \"%s\": \"%s\"" % (txt, translation))
+  tf.compat.v1.logging.info("Translation of \"%s\": \"%s\"" % (txt, translation))
 
 
 def main(unused_argv):
   from official.transformer import transformer_main
 
-  tf.logging.set_verbosity(tf.logging.INFO)
+  tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.INFO)
 
   if FLAGS.text is None and FLAGS.file is None:
-    tf.logging.warn("Nothing to translate. Make sure to call this script using "
+    tf.compat.v1.logging.warn("Nothing to translate. Make sure to call this script using "
                     "flags --text or --file.")
     return
 
@@ -173,19 +173,19 @@ def main(unused_argv):
       params=params)
 
   if FLAGS.text is not None:
-    tf.logging.info("Translating text: %s" % FLAGS.text)
+    tf.compat.v1.logging.info("Translating text: %s" % FLAGS.text)
     translate_text(estimator, subtokenizer, FLAGS.text)
 
   if FLAGS.file is not None:
     input_file = os.path.abspath(FLAGS.file)
-    tf.logging.info("Translating file: %s" % input_file)
-    if not tf.gfile.Exists(FLAGS.file):
+    tf.compat.v1.logging.info("Translating file: %s" % input_file)
+    if not tf.io.gfile.exists(FLAGS.file):
       raise ValueError("File does not exist: %s" % input_file)
 
     output_file = None
     if FLAGS.file_out is not None:
       output_file = os.path.abspath(FLAGS.file_out)
-      tf.logging.info("File output specified: %s" % output_file)
+      tf.compat.v1.logging.info("File output specified: %s" % output_file)
 
     translate_file(estimator, subtokenizer, input_file, output_file)
 

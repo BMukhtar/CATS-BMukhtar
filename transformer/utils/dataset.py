@@ -76,24 +76,24 @@ def _load_records(filename):
 def _parse_example(serialized_example):
   """Return inputs and targets Tensors from a serialized tf.Example."""
   data_fields = {
-      "inputs": tf.VarLenFeature(tf.int64),
-      "targets": tf.VarLenFeature(tf.int64)
+      "inputs": tf.io.VarLenFeature(tf.int64),
+      "targets": tf.io.VarLenFeature(tf.int64)
   }
-  parsed = tf.parse_single_example(serialized_example, data_fields)
-  inputs = tf.sparse_tensor_to_dense(parsed["inputs"])
-  targets = tf.sparse_tensor_to_dense(parsed["targets"])
+  parsed = tf.io.parse_single_example(serialized=serialized_example, features=data_fields)
+  inputs = tf.sparse.to_dense(parsed["inputs"])
+  targets = tf.sparse.to_dense(parsed["targets"])
   return inputs, targets
 
 
 def _filter_max_length(example, max_length=256):
   """Indicates whether the example's length is lower than the maximum length."""
-  return tf.logical_and(tf.size(example[0]) <= max_length,
-                        tf.size(example[1]) <= max_length)
+  return tf.logical_and(tf.size(input=example[0]) <= max_length,
+                        tf.size(input=example[1]) <= max_length)
 
 
 def _get_example_length(example):
   """Returns the maximum length between the example inputs and targets."""
-  length = tf.maximum(tf.shape(example[0])[0], tf.shape(example[1])[0])
+  length = tf.maximum(tf.shape(input=example[0])[0], tf.shape(input=example[1])[0])
   return length
 
 
@@ -167,7 +167,7 @@ def _batch_examples(dataset, batch_size, max_length):
     conditions_c = tf.logical_and(
         tf.less_equal(buckets_min, seq_length),
         tf.less(seq_length, buckets_max))
-    bucket_id = tf.reduce_min(tf.where(conditions_c))
+    bucket_id = tf.reduce_min(input_tensor=tf.compat.v1.where(conditions_c))
     return bucket_id
 
   def window_size_fn(bucket_id):
@@ -183,7 +183,7 @@ def _batch_examples(dataset, batch_size, max_length):
     # lengths as well. Resulting lengths of inputs and targets can differ.
     return grouped_dataset.padded_batch(bucket_batch_size, ([None], [None]))
 
-  return dataset.apply(tf.contrib.data.group_by_window(
+  return dataset.apply(tf.data.experimental.group_by_window(
       key_func=example_to_bucket_id,
       reduce_func=batching_fn,
       window_size=None,
@@ -223,7 +223,7 @@ def _read_and_batch_from_files(
   # Read files and interleave results. When training, the order of the examples
   # will be non-deterministic.
   dataset = dataset.apply(
-      tf.contrib.data.parallel_interleave(
+      tf.data.experimental.parallel_interleave(
           _load_records, sloppy=shuffle, cycle_length=num_parallel_calls))
 
   # Parse each tf.Example into a dictionary
@@ -244,7 +244,7 @@ def _read_and_batch_from_files(
   dataset = dataset.repeat(repeat)
 
   # Prefetch the next element to improve speed of input pipeline.
-  dataset = dataset.prefetch(buffer_size=tf.contrib.data.AUTOTUNE)
+  dataset = dataset.prefetch(buffer_size=tf.data.experimental.AUTOTUNE)
   return dataset
 
 

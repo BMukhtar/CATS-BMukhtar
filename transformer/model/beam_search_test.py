@@ -29,11 +29,11 @@ class BeamSearchHelperTests(tf.test.TestCase):
     x = tf.ones([7, 4, 2, 5])
     x = beam_search._expand_to_beam_size(x, 3)
     with self.test_session() as sess:
-      shape = sess.run(tf.shape(x))
+      shape = sess.run(tf.shape(input=x))
     self.assertAllEqual([7, 3, 4, 2, 5], shape)
 
   def test_shape_list(self):
-    y = tf.placeholder(dtype=tf.int32, shape=[])
+    y = tf.compat.v1.placeholder(dtype=tf.int32, shape=[])
     x = tf.ones([7, y, 2, 5])
     shape = beam_search._shape_list(x)
     self.assertIsInstance(shape[0], int)
@@ -43,7 +43,7 @@ class BeamSearchHelperTests(tf.test.TestCase):
 
   def test_get_shape_keep_last_dim(self):
     y = tf.constant(4.0)
-    x = tf.ones([7, tf.to_int32(tf.sqrt(y)), 2, 5])
+    x = tf.ones([7, tf.cast(tf.sqrt(y), dtype=tf.int32), 2, 5])
     shape = beam_search._get_shape_keep_last_dim(x)
     self.assertAllEqual([None, None, None, 5],
                         shape.as_list())
@@ -52,14 +52,14 @@ class BeamSearchHelperTests(tf.test.TestCase):
     x = tf.ones([7, 4, 2, 5])
     x = beam_search._flatten_beam_dim(x)
     with self.test_session() as sess:
-      shape = sess.run(tf.shape(x))
+      shape = sess.run(tf.shape(input=x))
     self.assertAllEqual([28, 2, 5], shape)
 
   def test_unflatten_beam_dim(self):
     x = tf.ones([28, 2, 5])
     x = beam_search._unflatten_beam_dim(x, 7, 4)
     with self.test_session() as sess:
-      shape = sess.run(tf.shape(x))
+      shape = sess.run(tf.shape(input=x))
     self.assertAllEqual([7, 4, 2, 5], shape)
 
   def test_gather_beams(self):

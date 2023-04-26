@@ -55,9 +55,9 @@ class Attention(tf.keras.layers.Layer):
     Returns:
       A tensor with shape [batch_size, num_heads, length, hidden_size/num_heads]
     """
-    with tf.name_scope("split_heads"):
-      batch_size = tf.shape(x)[0]
-      length = tf.shape(x)[1]
+    with tf.compat.v1.name_scope("split_heads"):
+      batch_size = tf.shape(input=x)[0]
+      length = tf.shape(input=x)[1]
 
       # Calculate depth of last dimension after it has been split.
       depth = (self.hidden_size // self.num_heads)
@@ -66,7 +66,7 @@ class Attention(tf.keras.layers.Layer):
       x = tf.reshape(x, [batch_size, length, self.num_heads, depth])
 
       # Transpose the result
-      return tf.transpose(x, [0, 2, 1, 3])
+      return tf.transpose(a=x, perm=[0, 2, 1, 3])
 
   def combine_heads(self, x):
     """Combine tensor that has been split.
@@ -77,10 +77,10 @@ class Attention(tf.keras.layers.Layer):
     Returns:
       A tensor with shape [batch_size, length, hidden_size]
     """
-    with tf.name_scope("combine_heads"):
-      batch_size = tf.shape(x)[0]
-      length = tf.shape(x)[2]
-      x = tf.transpose(x, [0, 2, 1, 3])  # --> [batch, length, num_heads, depth]
+    with tf.compat.v1.name_scope("combine_heads"):
+      batch_size = tf.shape(input=x)[0]
+      length = tf.shape(input=x)[2]
+      x = tf.transpose(a=x, perm=[0, 2, 1, 3])  # --> [batch, length, num_heads, depth]
       return tf.reshape(x, [batch_size, length, self.hidden_size])
 
   def call(self, x, y, bias, cache=None):
@@ -130,7 +130,7 @@ class Attention(tf.keras.layers.Layer):
     logits += bias
     weights = tf.nn.softmax(logits, name="attention_weights")
     if self.train:
-      weights = tf.nn.dropout(weights, 1.0 - self.attention_dropout)
+      weights = tf.nn.dropout(weights, rate=1 - (1.0 - self.attention_dropout))
     attention_output = tf.matmul(weights, v)
 
     # Recombine heads --> [batch_size, length, hidden_size]

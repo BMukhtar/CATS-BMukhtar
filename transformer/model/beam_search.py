@@ -74,7 +74,7 @@ class SequenceBeamSearch(object):
     state, state_shapes = self._create_initial_state(initial_ids, initial_cache)
 
     finished_state = tf.while_loop(
-        self._continue_search, self._search_step, loop_vars=[state],
+        cond=self._continue_search, body=self._search_step, loop_vars=[state],
         shape_invariants=[state_shapes], parallel_iterations=1, back_prop=False)
     finished_state = finished_state[0]
 
@@ -87,10 +87,10 @@ class SequenceBeamSearch(object):
     # Account for corner case where there are no finished sequences for a
     # particular batch item. In that case, return alive sequences for that batch
     # item.
-    finished_seq = tf.where(
-        tf.reduce_any(finished_flags, 1), finished_seq, alive_seq)
-    finished_scores = tf.where(
-        tf.reduce_any(finished_flags, 1), finished_scores, alive_log_probs)
+    finished_seq = tf.compat.v1.where(
+        tf.reduce_any(input_tensor=finished_flags, axis=1), finished_seq, alive_seq)
+    finished_scores = tf.compat.v1.where(
+        tf.reduce_any(input_tensor=finished_flags, axis=1), finished_scores, alive_log_probs)
     return finished_seq, finished_scores
 
   def _create_initial_state(self, initial_ids, initial_cache):
@@ -124,7 +124,7 @@ class SequenceBeamSearch(object):
         lambda t: _expand_to_beam_size(t, self.beam_size), initial_cache)
 
     # Initialize tensor storing finished sequences with filler values.
-    finished_seq = tf.zeros(tf.shape(alive_seq), tf.int32)
+    finished_seq = tf.zeros(tf.shape(input=alive_seq), tf.int32)
 
     # Set scores of the initial finished seqs to negative infinity.
     finished_scores = tf.ones([self.batch_size, self.beam_size]) * -INF
@@ -190,16 +190,16 @@ class SequenceBeamSearch(object):
     best_alive_scores = alive_log_probs[:, 0] / max_length_norm
 
     # Compute worst score in finished sequences for each batch element
-    finished_scores *= tf.to_float(finished_flags)  # set filler scores to zero
-    lowest_finished_scores = tf.reduce_min(finished_scores, axis=1)
+    finished_scores *= tf.cast(finished_flags, dtype=tf.float32)  # set filler scores to zero
+    lowest_finished_scores = tf.reduce_min(input_tensor=finished_scores, axis=1)
 
     # If there are no finished sequences in a batch element, then set the lowest
     # finished score to -INF for that element.
-    finished_batches = tf.reduce_any(finished_flags, 1)
-    lowest_finished_scores += (1. - tf.to_float(finished_batches)) * -INF
+    finished_batches = tf.reduce_any(input_tensor=finished_flags, axis=1)
+    lowest_finished_scores += (1. - tf.cast(finished_batches, dtype=tf.float32)) * -INF
 
     worst_finished_score_better_than_best_alive_score = tf.reduce_all(
-        tf.greater(lowest_finished_scores, best_alive_scores)
+        input_tensor=tf.greater(lowest_finished_scores, best_alive_scores)
     )
 
     return tf.logical_and(
@@ -319,7 +319,7 @@ class SequenceBeamSearch(object):
     """
     # To prevent finished sequences from being considered, set log probs to -INF
     new_finished_flags = tf.equal(new_seq[:, :, -1], self.eos_id)
-    new_log_probs += tf.to_float(new_finished_flags) * -INF
+    new_log_probs += tf.cast(new_finished_flags, dtype=tf.float32) * -INF
 
     top_alive_seq, top_alive_log_probs, top_alive_cache = _gather_topk_beams(
         [new_seq, new_log_probs, new_cache], new_log_probs, self.batch_size,
@@ -364,7 +364,7 @@ class SequenceBeamSearch(object):
 
     # Set the scores of the still-alive seq in new_seq to large negative values.
     new_finished_flags = tf.equal(new_seq[:, :, -1], self.eos_id)
-    new_scores += (1. - tf.to_float(new_finished_flags)) * -INF
+    new_scores += (1. - tf.cast(new_finished_flags, dtype=tf.float32)) * -INF
 
     # Combine sequences, scores, and flags.
     finished_seq = tf.concat([finished_seq, new_seq], axis=1)
@@ -410,19 +410,19 @@ def sequence_beam_search(
     Top decoded sequences [batch_size, beam_size, max_decode_length]
     sequence scores [batch_size, beam_size]
   """
-  batch_size = tf.shape(initial_ids)[0]
+  batch_size = tf.shape(input=initial_ids)[0]
   sbs = SequenceBeamSearch(symbols_to_logits_fn, vocab_size, batch_size,
                            beam_size, alpha, max_decode_length, eos_id)
   return sbs.search(initial_ids, initial_cache)
 
 
 def _log_prob_from_logits(logits):
-  return logits - tf.reduce_logsumexp(logits, axis=2, keep_dims=True)
+  return logits - tf.reduce_logsumexp(input_tensor=logits, axis=2, keepdims=True)
 
 
 def _length_normalization(alpha, length):
   """Return length normalization factor."""
-  return tf.pow(((5. + tf.to_float(length)) / 6.), alpha)
+  return tf.pow(((5. + tf.cast(length, dtype=tf.float32)) / 6.), alpha)
 
 
 def _expand_to_beam_size(tensor, beam_size):
@@ -448,7 +448,7 @@ def _shape_list(tensor):
   shape = tensor.get_shape().as_list()
 
   # Ensure that the shape values are not None
-  dynamic_shape = tf.shape(tensor)
+  dynamic_shape = tf.shape(input=tensor)
   for i in range(len(shape)):  # pylint: disable=consider-using-enumerate
     if shape[i] is None:
       shape[i] = dynamic_shape[i]

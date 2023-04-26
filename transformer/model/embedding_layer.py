@@ -47,12 +47,12 @@ class EmbeddingSharedWeights(tf.keras.layers.Layer):
     self.method = method
 
   def build(self, _):
-    with tf.variable_scope("embedding_and_softmax", reuse=tf.AUTO_REUSE):
+    with tf.compat.v1.variable_scope("embedding_and_softmax", reuse=tf.compat.v1.AUTO_REUSE):
       # Create and initialize weights. The random normal initializer was chosen
       # randomly, and works well.
-      self.shared_weights = tf.get_variable(
+      self.shared_weights = tf.compat.v1.get_variable(
           "weights", [self.vocab_size, self.hidden_size],
-          initializer=tf.random_normal_initializer(
+          initializer=tf.compat.v1.random_normal_initializer(
               0., self.hidden_size ** -0.5))
 
     self.built = True
@@ -67,9 +67,9 @@ class EmbeddingSharedWeights(tf.keras.layers.Layer):
       padding: float32 tensor with shape [batch_size, length] indicating the
         locations of the padding tokens in x.
     """
-    with tf.name_scope("embedding"):
+    with tf.compat.v1.name_scope("embedding"):
       # Create binary mask of size [batch_size, length]
-      mask = tf.to_float(tf.not_equal(x, 0))
+      mask = tf.cast(tf.not_equal(x, 0), dtype=tf.float32)
 
       if self.method == "gather":
         embeddings = tf.gather(self.shared_weights, x)
@@ -98,9 +98,9 @@ class EmbeddingSharedWeights(tf.keras.layers.Layer):
     Returns:
       float32 tensor with shape [batch_size, length, vocab_size].
     """
-    with tf.name_scope("presoftmax_linear"):
-      batch_size = tf.shape(x)[0]
-      length = tf.shape(x)[1]
+    with tf.compat.v1.name_scope("presoftmax_linear"):
+      batch_size = tf.shape(input=x)[0]
+      length = tf.shape(input=x)[1]
 
       x = tf.reshape(x, [-1, self.hidden_size])
       logits = tf.matmul(x, self.shared_weights, transpose_b=True)

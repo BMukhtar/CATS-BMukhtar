@@ -1,0 +1,627 @@
+TensorFlow 2.0 Upgrade Script
+-----------------------------
+Converted 35 files
+Detected 15 issues that require attention
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+File: ./preprocess_fasttext_bin.py
+--------------------------------------------------------------------------------
+./preprocess_fasttext_bin.py:23:4: WARNING: *.save requires manual check. (This warning is only applicable if the code saves a tf.Keras model) Keras model.save now saves to the Tensorflow SavedModel format by default, instead of HDF5. To continue saving to HDF5, add the argument save_format='h5' to the save() function.
+--------------------------------------------------------------------------------
+File: ./preprocess_fasttext_vec.py
+--------------------------------------------------------------------------------
+./preprocess_fasttext_vec.py:33:4: WARNING: *.save requires manual check. (This warning is only applicable if the code saves a tf.Keras model) Keras model.save now saves to the Tensorflow SavedModel format by default, instead of HDF5. To continue saving to HDF5, add the argument save_format='h5' to the save() function.
+--------------------------------------------------------------------------------
+File: ./model.py
+--------------------------------------------------------------------------------
+./model.py:26:15: WARNING: tf.nn.embedding_lookup requires manual check. `partition_strategy` has been removed from tf.nn.embedding_lookup.  The 'div' strategy will be used by default.
+./model.py:27:15: WARNING: tf.nn.embedding_lookup requires manual check. `partition_strategy` has been removed from tf.nn.embedding_lookup.  The 'div' strategy will be used by default.
+./model.py:29:22: WARNING: tf.nn.embedding_lookup requires manual check. `partition_strategy` has been removed from tf.nn.embedding_lookup.  The 'div' strategy will be used by default.
+./model.py:30:21: WARNING: tf.nn.embedding_lookup requires manual check. `partition_strategy` has been removed from tf.nn.embedding_lookup.  The 'div' strategy will be used by default.
+--------------------------------------------------------------------------------
+File: ./transformer/transformer_main.py
+--------------------------------------------------------------------------------
+./transformer/transformer_main.py:143:4: WARNING: Summary API writing function tf.contrib.summary.scalar now requires a 'step' argument; inserting default of tf.compat.v1.train.get_or_create_global_step().
+./transformer/transformer_main.py:143:4: WARNING: tf.contrib.summary.scalar requires manual check. tf.contrib.summary.* functions have been migrated best-effort to tf.compat.v2.summary.* equivalents where possible, but the resulting code is not guaranteed to work, so please check carefully. For more information about the new summary API, see the Effective TF 2.0 migration document or check the updated TensorBoard tutorials.
+./transformer/transformer_main.py:176:16: WARNING: tf.contrib.opt.LazyAdamOptimizer requires manual check. (Manual edit required) `tf.contrib.opt.LazyAdamOptimizer` has been migrated to `tfa.optimizers.LazyAdam` in TensorFlow Addons. The API spec may have changed during the migration. Please see https://github.com/tensorflow/addons for more info.
+./transformer/transformer_main.py:176:16: ERROR: Using member tf.contrib.opt.LazyAdamOptimizer in deprecated module tf.contrib. tf.contrib.opt.LazyAdamOptimizer cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+./transformer/transformer_main.py:624:4: ERROR: *.export_savedmodel requires manual check. (Manual edit required) Please rename the method export_savedmodel() to export_saved_model(). Two things to note:
+	(1) The argument strip_default_attributes has been removed. The function will always strip the default attributes from ops. If this breaks your code, please switch to tf.compat.v1.estimator.Estimator.
+	(2) This change only effects core estimator. If you are using tf.contrib.learn.Estimator, please switch to using core estimator.
+--------------------------------------------------------------------------------
+File: ./transformer/utils/dataset.py
+--------------------------------------------------------------------------------
+./transformer/utils/dataset.py:238:28: ERROR: Using member tf.contrib.data.padded_batch_and_drop_remainder in deprecated module tf.contrib. tf.contrib.data.padded_batch_and_drop_remainder cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+--------------------------------------------------------------------------------
+File: ./transformer/model/embedding_layer.py
+--------------------------------------------------------------------------------
+./transformer/model/embedding_layer.py:53:28: WARNING: tf.get_variable requires manual check. tf.get_variable returns ResourceVariables by default in 2.0, which have well-defined semantics and are stricter about shapes. You can disable this behavior by passing use_resource=False, or by calling tf.compat.v1.disable_resource_variables().
+--------------------------------------------------------------------------------
+File: ./transformer/model/transformer.py
+--------------------------------------------------------------------------------
+./transformer/model/transformer.py:254:17: WARNING: tf.get_variable requires manual check. tf.get_variable returns ResourceVariables by default in 2.0, which have well-defined semantics and are stricter about shapes. You can disable this behavior by passing use_resource=False, or by calling tf.compat.v1.disable_resource_variables().
+./transformer/model/transformer.py:256:16: WARNING: tf.get_variable requires manual check. tf.get_variable returns ResourceVariables by default in 2.0, which have well-defined semantics and are stricter about shapes. You can disable this behavior by passing use_resource=False, or by calling tf.compat.v1.disable_resource_variables().
+================================================================================
+Detailed log follows:
+
+================================================================================
+================================================================================
+Input tree: './'
+================================================================================
+--------------------------------------------------------------------------------
+Processing file './cats_train.py'
+ outputting to './cats_train.py'
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file './config.py'
+ outputting to './config.py'
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file './preprocess_fasttext_bin.py'
+ outputting to './preprocess_fasttext_bin.py'
+--------------------------------------------------------------------------------
+
+23:4: WARNING: *.save requires manual check. (This warning is only applicable if the code saves a tf.Keras model) Keras model.save now saves to the Tensorflow SavedModel format by default, instead of HDF5. To continue saving to HDF5, add the argument save_format='h5' to the save() function.
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file './preprocess_fasttext_vec.py'
+ outputting to './preprocess_fasttext_vec.py'
+--------------------------------------------------------------------------------
+
+33:4: WARNING: *.save requires manual check. (This warning is only applicable if the code saves a tf.Keras model) Keras model.save now saves to the Tensorflow SavedModel format by default, instead of HDF5. To continue saving to HDF5, add the argument save_format='h5' to the save() function.
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file './__init__.py'
+ outputting to './__init__.py'
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file './get_data.py'
+ outputting to './get_data.py'
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file './model.py'
+ outputting to './model.py'
+--------------------------------------------------------------------------------
+
+19:52: INFO: tf.keras.initializers.glorot_normal requires manual check. Initializers no longer have the dtype argument in the constructor or partition_info argument in the __call__ method.
+The calls have been converted to compat.v1 for safety (even though they may already have been correct).
+19:52: INFO: Renamed 'tf.keras.initializers.glorot_normal' to 'tf.compat.v1.keras.initializers.glorot_normal'
+21:52: INFO: tf.keras.initializers.glorot_normal requires manual check. Initializers no longer have the dtype argument in the constructor or partition_info argument in the __call__ method.
+The calls have been converted to compat.v1 for safety (even though they may already have been correct).
+21:52: INFO: Renamed 'tf.keras.initializers.glorot_normal' to 'tf.compat.v1.keras.initializers.glorot_normal'
+26:15: INFO: Added keywords to args of function 'tf.nn.embedding_lookup'
+26:15: WARNING: tf.nn.embedding_lookup requires manual check. `partition_strategy` has been removed from tf.nn.embedding_lookup.  The 'div' strategy will be used by default.
+27:15: INFO: Added keywords to args of function 'tf.nn.embedding_lookup'
+27:15: WARNING: tf.nn.embedding_lookup requires manual check. `partition_strategy` has been removed from tf.nn.embedding_lookup.  The 'div' strategy will be used by default.
+29:22: INFO: Added keywords to args of function 'tf.nn.embedding_lookup'
+29:22: WARNING: tf.nn.embedding_lookup requires manual check. `partition_strategy` has been removed from tf.nn.embedding_lookup.  The 'div' strategy will be used by default.
+30:21: INFO: Added keywords to args of function 'tf.nn.embedding_lookup'
+30:21: WARNING: tf.nn.embedding_lookup requires manual check. `partition_strategy` has been removed from tf.nn.embedding_lookup.  The 'div' strategy will be used by default.
+80:51: INFO: tf.keras.initializers.glorot_normal requires manual check. Initializers no longer have the dtype argument in the constructor or partition_info argument in the __call__ method.
+The calls have been converted to compat.v1 for safety (even though they may already have been correct).
+80:51: INFO: Renamed 'tf.keras.initializers.glorot_normal' to 'tf.compat.v1.keras.initializers.glorot_normal'
+84:35: INFO: Added keywords to args of function 'tf.cond'
+92:51: INFO: tf.keras.initializers.glorot_normal requires manual check. Initializers no longer have the dtype argument in the constructor or partition_info argument in the __call__ method.
+The calls have been converted to compat.v1 for safety (even though they may already have been correct).
+92:51: INFO: Renamed 'tf.keras.initializers.glorot_normal' to 'tf.compat.v1.keras.initializers.glorot_normal'
+103:20: INFO: Added keywords to args of function 'tf.reduce_sum'
+103:46: INFO: Renamed 'tf.log' to 'tf.math.log'
+105:17: INFO: Added keywords to args of function 'tf.reduce_sum'
+108:4: INFO: tf.summary.scalar requires manual check. The TF 1.x summary API cannot be automatically migrated to TF 2.0, so symbols have been converted to tf.compat.v1.summary.* and must be migrated manually. Typical usage will only require changes to the summary writing logic, not to individual calls like scalar(). For examples of the new summary API, see the Effective TF 2.0 migration document or check the TF 2.0 TensorBoard tutorials.
+108:4: INFO: Renamed 'tf.summary.scalar' to 'tf.compat.v1.summary.scalar'
+110:6: INFO: tf.summary.scalar requires manual check. The TF 1.x summary API cannot be automatically migrated to TF 2.0, so symbols have been converted to tf.compat.v1.summary.* and must be migrated manually. Typical usage will only require changes to the summary writing logic, not to individual calls like scalar(). For examples of the new summary API, see the Effective TF 2.0 migration document or check the TF 2.0 TensorBoard tutorials.
+110:6: INFO: Renamed 'tf.summary.scalar' to 'tf.compat.v1.summary.scalar'
+116:22: INFO: Renamed 'tf.train.AdamOptimizer' to 'tf.compat.v1.train.AdamOptimizer'
+117:66: INFO: Renamed 'tf.train.get_global_step' to 'tf.compat.v1.train.get_global_step'
+121:24: INFO: Renamed 'tf.train.AdamOptimizer' to 'tf.compat.v1.train.AdamOptimizer'
+122:68: INFO: Renamed 'tf.train.get_global_step' to 'tf.compat.v1.train.get_global_step'
+130:14: INFO: Added keywords to args of function 'tf.argmax'
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file './api.py'
+ outputting to './api.py'
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file './cats_preprocess.py'
+ outputting to './cats_preprocess.py'
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file './segment_input_text.py'
+ outputting to './segment_input_text.py'
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file './utils.py'
+ outputting to './utils.py'
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file './serializer.py'
+ outputting to './serializer.py'
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file './segment.py'
+ outputting to './segment.py'
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file './cats_predict.py'
+ outputting to './cats_predict.py'
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file './transformer/translate.py'
+ outputting to './transformer/translate.py'
+--------------------------------------------------------------------------------
+
+47:7: INFO: Renamed 'tf.gfile.Open' to 'tf.io.gfile.GFile'
+107:8: INFO: Renamed 'tf.logging.info' to 'tf.compat.v1.logging.info'
+124:6: INFO: Renamed 'tf.logging.info' to 'tf.compat.v1.logging.info'
+129:7: INFO: Renamed 'tf.gfile.IsDirectory' to 'tf.io.gfile.isdir'
+132:4: INFO: Renamed 'tf.logging.info' to 'tf.compat.v1.logging.info'
+133:9: INFO: Renamed 'tf.gfile.Open' to 'tf.io.gfile.GFile'
+150:2: INFO: Renamed 'tf.logging.info' to 'tf.compat.v1.logging.info'
+156:2: INFO: Renamed 'tf.logging.set_verbosity' to 'tf.compat.v1.logging.set_verbosity'
+156:27: INFO: Renamed 'tf.logging.INFO' to 'tf.compat.v1.logging.INFO'
+159:4: INFO: Renamed 'tf.logging.warn' to 'tf.compat.v1.logging.warn'
+176:4: INFO: Renamed 'tf.logging.info' to 'tf.compat.v1.logging.info'
+181:4: INFO: Renamed 'tf.logging.info' to 'tf.compat.v1.logging.info'
+182:11: INFO: Renamed 'tf.gfile.Exists' to 'tf.io.gfile.exists'
+188:6: INFO: Renamed 'tf.logging.info' to 'tf.compat.v1.logging.info'
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file './transformer/__init__.py'
+ outputting to './transformer/__init__.py'
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file './transformer/transformer_main.py'
+ outputting to './transformer/transformer_main.py'
+--------------------------------------------------------------------------------
+
+71:7: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+105:11: INFO: Added keywords to args of function 'tf.reduce_sum'
+105:37: INFO: Added keywords to args of function 'tf.reduce_sum'
+118:15: INFO: Renamed 'tf.contrib.tpu.TPUEstimatorSpec' to 'tf.compat.v1.estimator.tpu.TPUEstimatorSpec'
+131:15: INFO: Renamed 'tf.contrib.tpu.TPUEstimatorSpec' to 'tf.compat.v1.estimator.tpu.TPUEstimatorSpec'
+143:40: INFO: Renamed keyword argument for tf.contrib.summary.scalar from tensor to data
+143:4: WARNING: Summary API writing function tf.contrib.summary.scalar now requires a 'step' argument; inserting default of tf.compat.v1.train.get_or_create_global_step().
+143:4: WARNING: tf.contrib.summary.scalar requires manual check. tf.contrib.summary.* functions have been migrated best-effort to tf.compat.v2.summary.* equivalents where possible, but the resulting code is not guaranteed to work, so please check carefully. For more information about the new summary API, see the Effective TF 2.0 migration document or check the updated TensorBoard tutorials.
+143:4: INFO: Renamed 'tf.contrib.summary.scalar' to 'tf.compat.v2.summary.scalar'
+148:7: INFO: `name` passed to `name_scope`. Because you may be re-entering an existing scope, it is not safe to convert automatically,  the v2 name_scope does not support re-entering scopes by name.
+
+148:7: INFO: Renamed 'tf.name_scope' to 'tf.compat.v1.name_scope'
+149:19: INFO: Changed tf.to_float call to tf.cast(..., dtype=tf.float32).
+150:11: INFO: Changed tf.to_float call to tf.cast(..., dtype=tf.float32).
+150:23: INFO: Renamed 'tf.train.get_or_create_global_step' to 'tf.compat.v1.train.get_or_create_global_step'
+156:21: INFO: Renamed 'tf.rsqrt' to 'tf.math.rsqrt'
+168:7: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+176:16: WARNING: tf.contrib.opt.LazyAdamOptimizer requires manual check. (Manual edit required) `tf.contrib.opt.LazyAdamOptimizer` has been migrated to `tfa.optimizers.LazyAdam` in TensorFlow Addons. The API spec may have changed during the migration. Please see https://github.com/tensorflow/addons for more info.
+176:16: ERROR: Using member tf.contrib.opt.LazyAdamOptimizer in deprecated module tf.contrib. tf.contrib.opt.LazyAdamOptimizer cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+183:18: INFO: Renamed 'tf.contrib.tpu.CrossShardOptimizer' to 'tf.compat.v1.tpu.CrossShardOptimizer'
+186:18: INFO: Renamed 'tf.train.get_global_step' to 'tf.compat.v1.train.get_global_step'
+187:12: INFO: Renamed 'tf.trainable_variables' to 'tf.compat.v1.trainable_variables'
+188:16: INFO: optimizer.compute_gradients called with colocate_gradients_with_ops argument, requires manual check: Optimizer.compute_gradients no longer takes 'colocate_gradients_with_ops' argument, it behaves as if it was set to True.
+189:21: INFO: Removed argument colocate_gradients_with_ops for function optimizer.compute_gradients
+192:17: INFO: Renamed 'tf.get_collection' to 'tf.compat.v1.get_collection'
+192:35: INFO: Renamed 'tf.GraphKeys' to 'tf.compat.v1.GraphKeys'
+200:22: INFO: Renamed 'tf.global_norm' to 'tf.linalg.global_norm'
+235:2: INFO: Renamed 'tf.logging.info' to 'tf.compat.v1.logging.info'
+236:2: INFO: Renamed 'tf.logging.info' to 'tf.compat.v1.logging.info'
+242:9: INFO: Renamed 'tf.gfile.Exists' to 'tf.io.gfile.exists'
+301:2: INFO: Renamed 'tf.logging.info' to 'tf.compat.v1.logging.info'
+302:2: INFO: Renamed 'tf.logging.info' to 'tf.compat.v1.logging.info'
+304:2: INFO: Renamed 'tf.logging.info' to 'tf.compat.v1.logging.info'
+306:4: INFO: Renamed 'tf.logging.info' to 'tf.compat.v1.logging.info'
+308:6: INFO: Renamed 'tf.logging.info' to 'tf.compat.v1.logging.info'
+311:4: INFO: Renamed 'tf.logging.info' to 'tf.compat.v1.logging.info'
+317:18: INFO: tf.summary.FileWriter requires manual check. The TF 1.x summary API cannot be automatically migrated to TF 2.0, so symbols have been converted to tf.compat.v1.summary.* and must be migrated manually. Typical usage will only require changes to the summary writing logic, not to individual calls like scalar(). For examples of the new summary API, see the Effective TF 2.0 migration document or check the TF 2.0 TensorBoard tutorials.
+317:18: INFO: Renamed 'tf.summary.FileWriter' to 'tf.compat.v1.summary.FileWriter'
+325:4: INFO: Renamed 'tf.logging.info' to 'tf.compat.v1.logging.info'
+338:4: INFO: Renamed 'tf.logging.info' to 'tf.compat.v1.logging.info'
+340:4: INFO: Renamed 'tf.logging.info' to 'tf.compat.v1.logging.info'
+354:16: INFO: Renamed 'tf.Summary' to 'tf.compat.v1.Summary'
+355:10: INFO: Renamed 'tf.Summary' to 'tf.compat.v1.Summary'
+356:10: INFO: Renamed 'tf.Summary' to 'tf.compat.v1.Summary'
+505:25: INFO: Renamed 'tf.contrib.cluster_resolver.TPUClusterResolver' to 'tf.distribute.cluster_resolver.TPUClusterResolver'
+511:15: INFO: Renamed 'tf.contrib.tpu.TPUConfig' to 'tf.compat.v1.estimator.tpu.TPUConfig'
+515:15: INFO: Renamed 'tf.contrib.tpu.RunConfig' to 'tf.compat.v1.estimator.tpu.RunConfig'
+518:21: INFO: Renamed 'tf.ConfigProto' to 'tf.compat.v1.ConfigProto'
+522:9: INFO: Renamed 'tf.contrib.tpu.TPUEstimator' to 'tf.compat.v1.estimator.tpu.TPUEstimator'
+624:4: ERROR: *.export_savedmodel requires manual check. (Manual edit required) Please rename the method export_savedmodel() to export_saved_model(). Two things to note:
+	(1) The argument strip_default_attributes has been removed. The function will always strip the default attributes from ops. If this breaks your code, please switch to tf.compat.v1.estimator.Estimator.
+	(2) This change only effects core estimator. If you are using tf.contrib.learn.Estimator, please switch to using core estimator.
+636:2: INFO: Renamed 'tf.logging.set_verbosity' to 'tf.compat.v1.logging.set_verbosity'
+636:27: INFO: Renamed 'tf.logging.INFO' to 'tf.compat.v1.logging.INFO'
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file './transformer/utils/metrics.py'
+ outputting to './transformer/utils/metrics.py'
+--------------------------------------------------------------------------------
+
+41:7: INFO: `name` passed to `name_scope`. Because you may be re-entering an existing scope, it is not safe to convert automatically,  the v2 name_scope does not support re-entering scopes by name.
+
+41:7: INFO: Renamed 'tf.name_scope' to 'tf.compat.v1.name_scope'
+42:15: INFO: Added keywords to args of function 'tf.shape'
+43:15: INFO: Added keywords to args of function 'tf.shape'
+47:8: INFO: Added keywords to args of function 'tf.pad'
+48:8: INFO: Added keywords to args of function 'tf.pad'
+64:7: INFO: `name` passed to `name_scope`. Because you may be re-entering an existing scope, it is not safe to convert automatically,  the v2 name_scope does not support re-entering scopes by name.
+
+64:7: INFO: Renamed 'tf.name_scope' to 'tf.compat.v1.name_scope'
+68:9: INFO: `name` passed to `name_scope`. Because you may be re-entering an existing scope, it is not safe to convert automatically,  the v2 name_scope does not support re-entering scopes by name.
+
+68:9: INFO: Renamed 'tf.name_scope' to 'tf.compat.v1.name_scope'
+70:44: INFO: Changed tf.to_float call to tf.cast(..., dtype=tf.float32).
+76:17: INFO: Renamed 'tf.nn.softmax_cross_entropy_with_logits_v2' to 'tf.nn.softmax_cross_entropy_with_logits'
+82:23: INFO: Renamed 'tf.log' to 'tf.math.log'
+82:44: INFO: Changed tf.to_float call to tf.cast(..., dtype=tf.float32).
+83:27: INFO: Renamed 'tf.log' to 'tf.math.log'
+86:14: INFO: Changed tf.to_float call to tf.cast(..., dtype=tf.float32).
+108:11: INFO: tf.metrics.mean requires manual check. tf.metrics have been replaced with object oriented versions in TF 2.0 and after. The metric function calls have been converted to compat.v1 for backward compatibility. Please update these calls to the TF 2.0 versions.
+108:11: INFO: Renamed 'tf.metrics.mean' to 'tf.compat.v1.metrics.mean'
+143:7: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+145:14: INFO: Changed tf.to_float call to tf.cast(..., dtype=tf.float32).
+146:14: INFO: Changed tf.to_int32 call to tf.cast(..., dtype=tf.int32).
+146:26: INFO: Added keywords to args of function 'tf.argmax'
+147:20: INFO: Changed tf.to_int32 call to tf.cast(..., dtype=tf.int32).
+148:11: INFO: Changed tf.to_float call to tf.cast(..., dtype=tf.float32).
+153:7: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+155:14: INFO: Changed tf.to_float call to tf.cast(..., dtype=tf.float32).
+156:32: INFO: Added keywords to args of function 'tf.shape'
+158:14: INFO: Changed tf.to_int32 call to tf.cast(..., dtype=tf.int32).
+159:20: INFO: Changed tf.to_int32 call to tf.cast(..., dtype=tf.int32).
+162:11: INFO: Changed tf.to_float call to tf.cast(..., dtype=tf.float32).
+163:16: INFO: Added keywords to args of function 'tf.reduce_sum'
+173:7: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+175:14: INFO: Changed tf.to_float call to tf.cast(..., dtype=tf.float32).
+176:14: INFO: Changed tf.to_int32 call to tf.cast(..., dtype=tf.int32).
+176:26: INFO: Added keywords to args of function 'tf.argmax'
+177:20: INFO: Changed tf.to_int32 call to tf.cast(..., dtype=tf.int32).
+178:18: INFO: Changed tf.to_float call to tf.cast(..., dtype=tf.float32).
+180:40: INFO: Added keywords to args of function 'tf.reduce_sum'
+204:16: INFO: Changed tf.to_int32 call to tf.cast(..., dtype=tf.int32).
+204:28: INFO: Added keywords to args of function 'tf.argmax'
+206:9: INFO: Renamed 'tf.py_func' to 'tf.compat.v1.py_func'
+309:16: INFO: Changed tf.to_int32 call to tf.cast(..., dtype=tf.int32).
+309:28: INFO: Added keywords to args of function 'tf.argmax'
+311:20: INFO: Renamed 'tf.py_func' to 'tf.compat.v1.py_func'
+386:12: INFO: Changed tf.to_int32 call to tf.cast(..., dtype=tf.int32).
+386:24: INFO: Added keywords to args of function 'tf.argmax'
+387:20: INFO: Renamed 'tf.py_func' to 'tf.compat.v1.py_func'
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file './transformer/utils/schedule_test.py'
+ outputting to './transformer/utils/schedule_test.py'
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file './transformer/utils/__init__.py'
+ outputting to './transformer/utils/__init__.py'
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file './transformer/utils/dataset.py'
+ outputting to './transformer/utils/dataset.py'
+--------------------------------------------------------------------------------
+
+79:16: INFO: Renamed 'tf.VarLenFeature' to 'tf.io.VarLenFeature'
+80:17: INFO: Renamed 'tf.VarLenFeature' to 'tf.io.VarLenFeature'
+82:11: INFO: Added keywords to args of function 'tf.parse_single_example'
+82:11: INFO: Renamed 'tf.parse_single_example' to 'tf.io.parse_single_example'
+83:11: INFO: Renamed 'tf.sparse_tensor_to_dense' to 'tf.sparse.to_dense'
+84:12: INFO: Renamed 'tf.sparse_tensor_to_dense' to 'tf.sparse.to_dense'
+90:24: INFO: Added keywords to args of function 'tf.size'
+91:24: INFO: Added keywords to args of function 'tf.size'
+96:22: INFO: Added keywords to args of function 'tf.shape'
+96:47: INFO: Added keywords to args of function 'tf.shape'
+170:16: INFO: Added keywords to args of function 'tf.reduce_min'
+170:30: INFO: Renamed 'tf.where' to 'tf.compat.v1.where'
+186:23: INFO: Renamed 'tf.contrib.data.group_by_window' to 'tf.data.experimental.group_by_window'
+226:6: INFO: Renamed 'tf.contrib.data.parallel_interleave' to 'tf.data.experimental.parallel_interleave'
+238:28: ERROR: Using member tf.contrib.data.padded_batch_and_drop_remainder in deprecated module tf.contrib. tf.contrib.data.padded_batch_and_drop_remainder cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+247:41: INFO: Renamed 'tf.contrib.data.AUTOTUNE' to 'tf.data.experimental.AUTOTUNE'
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file './transformer/utils/tokenizer.py'
+ outputting to './transformer/utils/tokenizer.py'
+--------------------------------------------------------------------------------
+
+66:4: INFO: Renamed 'tf.logging.info' to 'tf.compat.v1.logging.info'
+109:7: INFO: Renamed 'tf.gfile.Exists' to 'tf.io.gfile.exists'
+110:6: INFO: Renamed 'tf.logging.info' to 'tf.compat.v1.logging.info'
+112:6: INFO: Renamed 'tf.logging.info' to 'tf.compat.v1.logging.info'
+118:6: INFO: Renamed 'tf.logging.info' to 'tf.compat.v1.logging.info'
+182:7: INFO: Renamed 'tf.gfile.Open' to 'tf.io.gfile.GFile'
+193:7: INFO: Renamed 'tf.gfile.Open' to 'tf.io.gfile.GFile'
+342:9: INFO: Renamed 'tf.gfile.Open' to 'tf.io.gfile.GFile'
+397:4: INFO: Renamed 'tf.logging.info' to 'tf.compat.v1.logging.info'
+405:4: INFO: Renamed 'tf.logging.info' to 'tf.compat.v1.logging.info'
+411:4: INFO: Renamed 'tf.logging.info' to 'tf.compat.v1.logging.info'
+428:2: INFO: Renamed 'tf.logging.info' to 'tf.compat.v1.logging.info'
+597:4: INFO: Renamed 'tf.logging.info' to 'tf.compat.v1.logging.info'
+610:4: INFO: Renamed 'tf.logging.info' to 'tf.compat.v1.logging.info'
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file './transformer/utils/tokenizer_test.py'
+ outputting to './transformer/utils/tokenizer_test.py'
+--------------------------------------------------------------------------------
+
+29:9: INFO: Renamed 'tf.gfile.Open' to 'tf.io.gfile.GFile'
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file './transformer/utils/schedule.py'
+ outputting to './transformer/utils/schedule.py'
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file './transformer/model/model_params.py'
+ outputting to './transformer/model/model_params.py'
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file './transformer/model/model_utils.py'
+ outputting to './transformer/model/model_utils.py'
+--------------------------------------------------------------------------------
+
+45:13: INFO: Changed tf.to_float call to tf.cast(..., dtype=tf.float32).
+49:7: INFO: Changed tf.to_float call to tf.cast(..., dtype=tf.float32).
+51:6: INFO: Changed tf.to_float call to tf.cast(..., dtype=tf.float32).
+70:7: INFO: `name` passed to `name_scope`. Because you may be re-entering an existing scope, it is not safe to convert automatically,  the v2 name_scope does not support re-entering scopes by name.
+
+70:7: INFO: Renamed 'tf.name_scope' to 'tf.compat.v1.name_scope'
+71:17: INFO: Renamed 'tf.matrix_band_part' to 'tf.linalg.band_part'
+88:7: INFO: `name` passed to `name_scope`. Because you may be re-entering an existing scope, it is not safe to convert automatically,  the v2 name_scope does not support re-entering scopes by name.
+
+88:7: INFO: Renamed 'tf.name_scope' to 'tf.compat.v1.name_scope'
+89:11: INFO: Changed tf.to_float call to tf.cast(..., dtype=tf.float32).
+105:7: INFO: `name` passed to `name_scope`. Because you may be re-entering an existing scope, it is not safe to convert automatically,  the v2 name_scope does not support re-entering scopes by name.
+
+105:7: INFO: Renamed 'tf.name_scope' to 'tf.compat.v1.name_scope'
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file './transformer/model/ffn_layer.py'
+ outputting to './transformer/model/ffn_layer.py'
+--------------------------------------------------------------------------------
+
+57:17: INFO: Added keywords to args of function 'tf.shape'
+58:13: INFO: Added keywords to args of function 'tf.shape'
+61:11: INFO: `name` passed to `name_scope`. Because you may be re-entering an existing scope, it is not safe to convert automatically,  the v2 name_scope does not support re-entering scopes by name.
+
+61:11: INFO: Renamed 'tf.name_scope' to 'tf.compat.v1.name_scope'
+65:21: INFO: Changed tf.to_int32 call to tf.cast(..., dtype=tf.int32).
+65:33: INFO: Renamed 'tf.where' to 'tf.compat.v1.where'
+77:15: INFO: Changing keep_prob arg of tf.nn.dropout to rate, and recomputing value.
+
+81:11: INFO: `name` passed to `name_scope`. Because you may be re-entering an existing scope, it is not safe to convert automatically,  the v2 name_scope does not support re-entering scopes by name.
+
+81:11: INFO: Renamed 'tf.name_scope' to 'tf.compat.v1.name_scope'
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file './transformer/model/embedding_layer.py'
+ outputting to './transformer/model/embedding_layer.py'
+--------------------------------------------------------------------------------
+
+50:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+50:58: INFO: Renamed 'tf.AUTO_REUSE' to 'tf.compat.v1.AUTO_REUSE'
+53:28: WARNING: tf.get_variable requires manual check. tf.get_variable returns ResourceVariables by default in 2.0, which have well-defined semantics and are stricter about shapes. You can disable this behavior by passing use_resource=False, or by calling tf.compat.v1.disable_resource_variables().
+53:28: INFO: Renamed 'tf.get_variable' to 'tf.compat.v1.get_variable'
+55:22: INFO: tf.random_normal_initializer requires manual check. Initializers no longer have the dtype argument in the constructor or partition_info argument in the __call__ method.
+The calls have been converted to compat.v1 for safety (even though they may already have been correct).
+55:22: INFO: Renamed 'tf.random_normal_initializer' to 'tf.compat.v1.random_normal_initializer'
+70:9: INFO: `name` passed to `name_scope`. Because you may be re-entering an existing scope, it is not safe to convert automatically,  the v2 name_scope does not support re-entering scopes by name.
+
+70:9: INFO: Renamed 'tf.name_scope' to 'tf.compat.v1.name_scope'
+72:13: INFO: Changed tf.to_float call to tf.cast(..., dtype=tf.float32).
+101:9: INFO: `name` passed to `name_scope`. Because you may be re-entering an existing scope, it is not safe to convert automatically,  the v2 name_scope does not support re-entering scopes by name.
+
+101:9: INFO: Renamed 'tf.name_scope' to 'tf.compat.v1.name_scope'
+102:19: INFO: Added keywords to args of function 'tf.shape'
+103:15: INFO: Added keywords to args of function 'tf.shape'
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file './transformer/model/__init__.py'
+ outputting to './transformer/model/__init__.py'
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file './transformer/model/model_utils_test.py'
+ outputting to './transformer/model/model_utils_test.py'
+--------------------------------------------------------------------------------
+
+42:17: INFO: Added keywords to args of function 'tf.shape'
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file './transformer/model/beam_search.py'
+ outputting to './transformer/model/beam_search.py'
+--------------------------------------------------------------------------------
+
+76:21: INFO: Added keywords to args of function 'tf.while_loop'
+90:19: INFO: Renamed 'tf.where' to 'tf.compat.v1.where'
+91:8: INFO: Added keywords to args of function 'tf.reduce_any'
+92:22: INFO: Renamed 'tf.where' to 'tf.compat.v1.where'
+93:8: INFO: Added keywords to args of function 'tf.reduce_any'
+127:28: INFO: Added keywords to args of function 'tf.shape'
+193:23: INFO: Changed tf.to_float call to tf.cast(..., dtype=tf.float32).
+194:29: INFO: Added keywords to args of function 'tf.reduce_min'
+198:23: INFO: Added keywords to args of function 'tf.reduce_any'
+199:36: INFO: Changed tf.to_float call to tf.cast(..., dtype=tf.float32).
+201:56: INFO: Added keywords to args of function 'tf.reduce_all'
+322:21: INFO: Changed tf.to_float call to tf.cast(..., dtype=tf.float32).
+367:24: INFO: Changed tf.to_float call to tf.cast(..., dtype=tf.float32).
+413:15: INFO: Added keywords to args of function 'tf.shape'
+420:18: INFO: Added keywords to args of function 'tf.reduce_logsumexp'
+420:54: INFO: Renamed keyword argument for tf.reduce_logsumexp from keep_dims to keepdims
+425:23: INFO: Changed tf.to_float call to tf.cast(..., dtype=tf.float32).
+451:18: INFO: Added keywords to args of function 'tf.shape'
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file './transformer/model/beam_search_test.py'
+ outputting to './transformer/model/beam_search_test.py'
+--------------------------------------------------------------------------------
+
+32:23: INFO: Added keywords to args of function 'tf.shape'
+36:8: INFO: Renamed 'tf.placeholder' to 'tf.compat.v1.placeholder'
+46:20: INFO: Changed tf.to_int32 call to tf.cast(..., dtype=tf.int32).
+55:23: INFO: Added keywords to args of function 'tf.shape'
+62:23: INFO: Added keywords to args of function 'tf.shape'
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file './transformer/model/transformer.py'
+ outputting to './transformer/model/transformer.py'
+--------------------------------------------------------------------------------
+
+82:18: INFO: tf.variance_scaling_initializer requires manual check. Initializers no longer have the dtype argument in the constructor or partition_info argument in the __call__ method.
+The calls have been converted to compat.v1 for safety (even though they may already have been correct).
+82:18: INFO: Renamed 'tf.variance_scaling_initializer' to 'tf.compat.v1.variance_scaling_initializer'
+84:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+111:9: INFO: `name` passed to `name_scope`. Because you may be re-entering an existing scope, it is not safe to convert automatically,  the v2 name_scope does not support re-entering scopes by name.
+
+111:9: INFO: Renamed 'tf.name_scope' to 'tf.compat.v1.name_scope'
+117:11: INFO: `name` passed to `name_scope`. Because you may be re-entering an existing scope, it is not safe to convert automatically,  the v2 name_scope does not support re-entering scopes by name.
+
+117:11: INFO: Renamed 'tf.name_scope' to 'tf.compat.v1.name_scope'
+118:17: INFO: Added keywords to args of function 'tf.shape'
+124:25: INFO: Changing keep_prob arg of tf.nn.dropout to rate, and recomputing value.
+
+142:9: INFO: `name` passed to `name_scope`. Because you may be re-entering an existing scope, it is not safe to convert automatically,  the v2 name_scope does not support re-entering scopes by name.
+
+142:9: INFO: Renamed 'tf.name_scope' to 'tf.compat.v1.name_scope'
+146:11: INFO: `name` passed to `name_scope`. Because you may be re-entering an existing scope, it is not safe to convert automatically,  the v2 name_scope does not support re-entering scopes by name.
+
+146:11: INFO: Renamed 'tf.name_scope' to 'tf.compat.v1.name_scope'
+148:25: INFO: Added keywords to args of function 'tf.pad'
+150:11: INFO: `name` passed to `name_scope`. Because you may be re-entering an existing scope, it is not safe to convert automatically,  the v2 name_scope does not support re-entering scopes by name.
+
+150:11: INFO: Renamed 'tf.name_scope' to 'tf.compat.v1.name_scope'
+151:17: INFO: Added keywords to args of function 'tf.shape'
+155:25: INFO: Changing keep_prob arg of tf.nn.dropout to rate, and recomputing value.
+
+208:17: INFO: Added keywords to args of function 'tf.shape'
+209:19: INFO: Added keywords to args of function 'tf.shape'
+254:17: WARNING: tf.get_variable requires manual check. tf.get_variable returns ResourceVariables by default in 2.0, which have well-defined semantics and are stricter about shapes. You can disable this behavior by passing use_resource=False, or by calling tf.compat.v1.disable_resource_variables().
+254:17: INFO: Renamed 'tf.get_variable' to 'tf.compat.v1.get_variable'
+255:45: INFO: tf.ones_initializer requires manual check. Initializers no longer have the dtype argument in the constructor or partition_info argument in the __call__ method.
+The calls have been converted to compat.v1 for safety (even though they may already have been correct).
+255:45: INFO: Renamed 'tf.ones_initializer' to 'tf.compat.v1.ones_initializer'
+256:16: WARNING: tf.get_variable requires manual check. tf.get_variable returns ResourceVariables by default in 2.0, which have well-defined semantics and are stricter about shapes. You can disable this behavior by passing use_resource=False, or by calling tf.compat.v1.disable_resource_variables().
+256:16: INFO: Renamed 'tf.get_variable' to 'tf.compat.v1.get_variable'
+257:44: INFO: tf.zeros_initializer requires manual check. Initializers no longer have the dtype argument in the constructor or partition_info argument in the __call__ method.
+The calls have been converted to compat.v1 for safety (even though they may already have been correct).
+257:44: INFO: Renamed 'tf.zeros_initializer' to 'tf.compat.v1.zeros_initializer'
+261:11: INFO: Added keywords to args of function 'tf.reduce_mean'
+262:15: INFO: Added keywords to args of function 'tf.reduce_mean'
+263:26: INFO: Renamed 'tf.rsqrt' to 'tf.math.rsqrt'
+287:10: INFO: Changing keep_prob arg of tf.nn.dropout to rate, and recomputing value.
+
+337:11: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+338:13: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+340:13: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+407:11: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+408:13: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+411:13: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+414:13: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file './transformer/model/attention_layer.py'
+ outputting to './transformer/model/attention_layer.py'
+--------------------------------------------------------------------------------
+
+58:9: INFO: `name` passed to `name_scope`. Because you may be re-entering an existing scope, it is not safe to convert automatically,  the v2 name_scope does not support re-entering scopes by name.
+
+58:9: INFO: Renamed 'tf.name_scope' to 'tf.compat.v1.name_scope'
+59:19: INFO: Added keywords to args of function 'tf.shape'
+60:15: INFO: Added keywords to args of function 'tf.shape'
+69:13: INFO: Added keywords to args of function 'tf.transpose'
+80:9: INFO: `name` passed to `name_scope`. Because you may be re-entering an existing scope, it is not safe to convert automatically,  the v2 name_scope does not support re-entering scopes by name.
+
+80:9: INFO: Renamed 'tf.name_scope' to 'tf.compat.v1.name_scope'
+81:19: INFO: Added keywords to args of function 'tf.shape'
+82:15: INFO: Added keywords to args of function 'tf.shape'
+83:10: INFO: Added keywords to args of function 'tf.transpose'
+133:16: INFO: Changing keep_prob arg of tf.nn.dropout to rate, and recomputing value.
+
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file './tests/test_segmentation.py'
+ outputting to './tests/test_segmentation.py'
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+

@@ -68,7 +68,7 @@ TENSORS_TO_LOG = {
 
 def model_fn(features, labels, mode, params):
   """Defines how to train, evaluate and predict from the transformer model."""
-  with tf.variable_scope("model"):
+  with tf.compat.v1.variable_scope("model"):
     inputs, targets = features, labels
 
     # Create model and get output logits.
@@ -102,7 +102,7 @@ def model_fn(features, labels, mode, params):
     # targets.
     xentropy, weights = metrics.padded_cross_entropy_loss(
         logits, targets, params["label_smoothing"], params["vocab_size"])
-    loss = tf.reduce_sum(xentropy) / tf.reduce_sum(weights)
+    loss = tf.reduce_sum(input_tensor=xentropy) / tf.reduce_sum(input_tensor=weights)
 
     # Save loss as named tensor that will be logged with the logging hook.
     tf.identity(loss, "cross_entropy")
@@ -115,7 +115,7 @@ def model_fn(features, labels, mode, params):
         metric_fn = lambda logits, labels: (
             metrics.get_eval_metrics(logits, labels, params=params))
         eval_metrics = (metric_fn, [logits, labels])
-        return tf.contrib.tpu.TPUEstimatorSpec(
+        return tf.compat.v1.estimator.tpu.TPUEstimatorSpec(
             mode=mode, loss=loss, predictions={"predictions": logits},
             eval_metrics=eval_metrics)
       return tf.estimator.EstimatorSpec(
@@ -128,7 +128,7 @@ def model_fn(features, labels, mode, params):
       # in TensorBoard.
       metric_dict["minibatch_loss"] = loss
       if params["use_tpu"]:
-        return tf.contrib.tpu.TPUEstimatorSpec(
+        return tf.compat.v1.estimator.tpu.TPUEstimatorSpec(
             mode=mode, loss=loss, train_op=train_op,
             host_call=tpu_util.construct_scalar_host_call(
                 metric_dict=metric_dict, model_dir=params["model_dir"],
@@ -140,20 +140,20 @@ def model_fn(features, labels, mode, params):
 
 def record_scalars(metric_dict):
   for key, value in metric_dict.items():
-    tf.contrib.summary.scalar(name=key, tensor=value)
+    tf.compat.v2.summary.scalar(name=key, data=value, step=tf.compat.v1.train.get_or_create_global_step())
 
 
 def get_learning_rate(learning_rate, hidden_size, learning_rate_warmup_steps):
   """Calculate learning rate with linear warmup and rsqrt decay."""
-  with tf.name_scope("learning_rate"):
-    warmup_steps = tf.to_float(learning_rate_warmup_steps)
-    step = tf.to_float(tf.train.get_or_create_global_step())
+  with tf.compat.v1.name_scope("learning_rate"):
+    warmup_steps = tf.cast(learning_rate_warmup_steps, dtype=tf.float32)
+    step = tf.cast(tf.compat.v1.train.get_or_create_global_step(), dtype=tf.float32)
 
     learning_rate *= (hidden_size ** -0.5)
     # Apply linear warmup
     learning_rate *= tf.minimum(1.0, step / warmup_steps)
     # Apply rsqrt decay
-    learning_rate *= tf.rsqrt(tf.maximum(step, warmup_steps))
+    learning_rate *= tf.math.rsqrt(tf.maximum(step, warmup_steps))
 
     # Create a named tensor that will be logged using the logging hook.
     # The full name includes variable and names scope. In this case, the name
@@ -165,7 +165,7 @@ def get_learning_rate(learning_rate, hidden_size, learning_rate_warmup_steps):
 
 def get_train_op_and_metrics(loss, params):
   """Generate training op and metrics to save in TensorBoard."""
-  with tf.variable_scope("get_train_op"):
+  with tf.compat.v1.variable_scope("get_train_op"):
     learning_rate = get_learning_rate(
         learning_rate=params["learning_rate"],
         hidden_size=params["hidden_size"],
@@ -180,16 +180,16 @@ def get_train_op_and_metrics(loss, params):
         epsilon=params["optimizer_adam_epsilon"])
 
     if params["use_tpu"] and params["tpu"] != tpu_util.LOCAL:
-      optimizer = tf.contrib.tpu.CrossShardOptimizer(optimizer)
+      optimizer = tf.compat.v1.tpu.CrossShardOptimizer(optimizer)
 
     # Calculate and apply gradients using LazyAdamOptimizer.
-    global_step = tf.train.get_global_step()
-    tvars = tf.trainable_variables()
+    global_step = tf.compat.v1.train.get_global_step()
+    tvars = tf.compat.v1.trainable_variables()
     gradients = optimizer.compute_gradients(
-        loss, tvars, colocate_gradients_with_ops=True)
+        loss, tvars)
     minimize_op = optimizer.apply_gradients(
         gradients, global_step=global_step, name="train")
-    update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
+    update_ops = tf.compat.v1.get_collection(tf.compat.v1.GraphKeys.UPDATE_OPS)
     train_op = tf.group(minimize_op, update_ops)
 
     train_metrics = {"learning_rate": learning_rate}
@@ -197,7 +197,7 @@ def get_train_op_and_metrics(loss, params):
     if not params["use_tpu"]:
       # gradient norm is not included as a summary when running on TPU, as
       # it can cause instability between the TPU and the host controller.
-      gradient_norm = tf.global_norm(list(zip(*gradients))[0])
+      gradient_norm = tf.linalg.global_norm(list(zip(*gradients))[0])
       train_metrics["global_norm/gradient_norm"] = gradient_norm
 
     return train_op, train_metrics
@@ -232,14 +232,14 @@ def evaluate_and_log_bleu(estimator, bleu_source, bleu_ref, vocab_file):
   uncased_score, cased_score = translate_and_compute_bleu(
       estimator, subtokenizer, bleu_source, bleu_ref)
 
-  tf.logging.info("Bleu score (uncased): %d", uncased_score)
-  tf.logging.info("Bleu score (cased): %d", cased_score)
+  tf.compat.v1.logging.info("Bleu score (uncased): %d", uncased_score)
+  tf.compat.v1.logging.info("Bleu score (cased): %d", cased_score)
   return uncased_score, cased_score
 
 
 def _validate_file(filepath):
   """Make sure that file exists."""
-  if not tf.gfile.Exists(filepath):
+  if not tf.io.gfile.exists(filepath):
     raise tf.errors.NotFoundError(None, None, "File %s not found." % filepath)
 
 
@@ -298,23 +298,23 @@ def run_loop(
                      "supported.")
 
   # Print details of training schedule.
-  tf.logging.info("Training schedule:")
-  tf.logging.info(
+  tf.compat.v1.logging.info("Training schedule:")
+  tf.compat.v1.logging.info(
       "\t1. Train for {}".format(schedule_manager.train_increment_str))
-  tf.logging.info("\t2. Evaluate model.")
+  tf.compat.v1.logging.info("\t2. Evaluate model.")
   if evaluate_bleu:
-    tf.logging.info("\t3. Compute BLEU score.")
+    tf.compat.v1.logging.info("\t3. Compute BLEU score.")
     if bleu_threshold is not None:
-      tf.logging.info("Repeat above steps until the BLEU score reaches %f" %
+      tf.compat.v1.logging.info("Repeat above steps until the BLEU score reaches %f" %
                       bleu_threshold)
   if not evaluate_bleu or bleu_threshold is None:
-    tf.logging.info("Repeat above steps %d times." %
+    tf.compat.v1.logging.info("Repeat above steps %d times." %
                     schedule_manager.train_eval_iterations)
 
   if evaluate_bleu:
     # Create summary writer to log bleu score (values can be displayed in
     # Tensorboard).
-    bleu_writer = tf.summary.FileWriter(
+    bleu_writer = tf.compat.v1.summary.FileWriter(
         os.path.join(estimator.model_dir, BLEU_DIR))
     if bleu_threshold is not None:
       # Change loop stopping condition if bleu_threshold is defined.
@@ -322,7 +322,7 @@ def run_loop(
 
   # Loop training/evaluation/bleu cycles
   for i in xrange(schedule_manager.train_eval_iterations):
-    tf.logging.info("Starting iteration %d" % (i + 1))
+    tf.compat.v1.logging.info("Starting iteration %d" % (i + 1))
 
     # Train the model for single_iteration_train_steps or until the input fn
     # runs out of examples (if single_iteration_train_steps is None).
@@ -335,9 +335,9 @@ def run_loop(
         input_fn=dataset.eval_input_fn,
         steps=schedule_manager.single_iteration_eval_steps)
 
-    tf.logging.info("Evaluation results (iter %d/%d):" %
+    tf.compat.v1.logging.info("Evaluation results (iter %d/%d):" %
                     (i + 1, schedule_manager.train_eval_iterations))
-    tf.logging.info(eval_results)
+    tf.compat.v1.logging.info(eval_results)
     benchmark_logger.log_evaluation_result(eval_results)
 
     # The results from estimator.evaluate() are measured on an approximate
@@ -351,9 +351,9 @@ def run_loop(
 
       # Write actual bleu scores using summary writer and benchmark logger
       global_step = get_global_step(estimator)
-      summary = tf.Summary(value=[
-          tf.Summary.Value(tag="bleu/uncased", simple_value=uncased_score),
-          tf.Summary.Value(tag="bleu/cased", simple_value=cased_score),
+      summary = tf.compat.v1.Summary(value=[
+          tf.compat.v1.Summary.Value(tag="bleu/uncased", simple_value=uncased_score),
+          tf.compat.v1.Summary.Value(tag="bleu/cased", simple_value=cased_score),
       ])
       bleu_writer.add_summary(summary, global_step)
       bleu_writer.flush()
@@ -502,24 +502,24 @@ def construct_estimator(flags_obj, params, schedule_manager):
         model_fn=model_fn, model_dir=flags_obj.model_dir, params=params,
         config=tf.estimator.RunConfig(train_distribute=distribution_strategy))
 
-  tpu_cluster_resolver = tf.contrib.cluster_resolver.TPUClusterResolver(
+  tpu_cluster_resolver = tf.distribute.cluster_resolver.TPUClusterResolver(
       tpu=flags_obj.tpu,
       zone=flags_obj.tpu_zone,
       project=flags_obj.tpu_gcp_project
   )
 
-  tpu_config = tf.contrib.tpu.TPUConfig(
+  tpu_config = tf.compat.v1.estimator.tpu.TPUConfig(
       iterations_per_loop=schedule_manager.single_iteration_train_steps,
       num_shards=flags_obj.num_tpu_shards)
 
-  run_config = tf.contrib.tpu.RunConfig(
+  run_config = tf.compat.v1.estimator.tpu.RunConfig(
       cluster=tpu_cluster_resolver,
       model_dir=flags_obj.model_dir,
-      session_config=tf.ConfigProto(
+      session_config=tf.compat.v1.ConfigProto(
           allow_soft_placement=True, log_device_placement=True),
       tpu_config=tpu_config)
 
-  return tf.contrib.tpu.TPUEstimator(
+  return tf.compat.v1.estimator.tpu.TPUEstimator(
       model_fn=model_fn,
       use_tpu=params["use_tpu"] and flags_obj.tpu != tpu_util.LOCAL,
       train_batch_size=schedule_manager.batch_size,
@@ -633,6 +633,6 @@ def main(_):
 
 
 if __name__ == "__main__":
-  tf.logging.set_verbosity(tf.logging.INFO)
+  tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.INFO)
   define_transformer_flags()
   absl_app.run(main)
