@@ -41,7 +41,7 @@ python $DIR/cats_predict.py $OUT_DIR $OUT_DIR --scores $SCORES
 echo "Segmentation done, segmented texts stored in the output directory."
 
 echo "Removing the intermediate serialized files..."
-rm $OUT_DIR/records.tf
+rm $OUT_DIR/records.tfrecords
 rm $OUT_DIR/blocks.pkl
 echo "Completed. All done here, ciao bella!"
 

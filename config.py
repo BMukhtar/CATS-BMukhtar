@@ -26,6 +26,12 @@ vecs_path_en = "{}/data/embeddings/en.vectors".format(MODEL_PATH)
 vocab_path_lang = "{}/data/embeddings/hr.vocab".format(MODEL_PATH)
 vecs_path_lang = "{}/data/embeddings/hr.vectors".format(MODEL_PATH)
 
+# data
+data_original_input_dir = "{}/data/input/".format(MODEL_PATH)
+data_preprocessed_output_dir = "{}/data/output/".format(MODEL_PATH)
+data_preprocessed_records_file = "records.tfrecord"
+data_preprocessed_blocks_file = "blocks.pkl"
+
 ###
 # MODEL
 ###
@@ -96,6 +102,6 @@ SENT_TRANS_PARAMS_PREDICT_TLT = {"num_hidden_layers": 6,
                                  }
 
 # training
-tfrec_train = ""
+tfrec_train = "data/output/"
 EPOCHS = 100
 SAVE_CHECKPOINT_STEPS = 500
