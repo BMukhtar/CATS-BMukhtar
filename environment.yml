@@ -3,6 +3,7 @@ channels:
   - conda-forge
 dependencies:
   - python~=3.8
-  - tensorflow
+  - tensorflow~=2.11.1
+  - tensorflow_addons~=0.20.0
   - nltk~=3.4
 

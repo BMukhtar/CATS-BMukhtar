@@ -30,6 +30,7 @@ from six.moves import xrange  # pylint: disable=redefined-builtin
 from absl import app as absl_app
 from absl import flags
 import tensorflow as tf
+import tensorflow_addons as tfa
 # pylint: enable=g-bad-import-order
 
 from official.transformer import compute_bleu
@@ -173,7 +174,7 @@ def get_train_op_and_metrics(loss, params):
 
     # Create optimizer. Use LazyAdamOptimizer from TF contrib, which is faster
     # than the TF core Adam optimizer.
-    optimizer = tf.contrib.opt.LazyAdamOptimizer(
+    optimizer = tfa.optimizers.LazyAdam(
         learning_rate,
         beta1=params["optimizer_adam_beta1"],
         beta2=params["optimizer_adam_beta2"],
