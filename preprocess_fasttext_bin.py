@@ -6,7 +6,8 @@ import config
 model = fasttext.load_model(config.bin_path_en)
 vocab = {}
 vectors = []
-for word in model.words:
+max_tokens = len(model.words) - 1900000
+for word in model.words[:max_tokens]:
     vocab[word] = len(vocab)
     vectors.append(model[word])
 
@@ -23,3 +24,5 @@ with open(config.vecs_path_en, 'wb') as f:
     np.save(f, vectors)
 
 print("saved")
+
+#%%
