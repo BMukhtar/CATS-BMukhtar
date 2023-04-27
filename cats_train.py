@@ -29,3 +29,4 @@ estimator = tf.estimator.Estimator(model_fn=model.model_fn, config=rconf, params
 
 print("Training the model...")
 res = estimator.train(input_fn=lambda : get_data.get_data(os.path.join(dirname, config.tfrec_train), is_train = True, epochs = config.EPOCHS))
+#%%
