@@ -38,7 +38,7 @@ MODEL_HOME = "{}/data/models/cats_pretrained".format(MODEL_PATH)  # for TLT, use
 ###
 
 # general
-batch_size = 20
+batch_size = 16
 sent_window = 16
 sent_stride = 8
 perc_blocks_train = 0.35
@@ -97,5 +97,5 @@ SENT_TRANS_PARAMS_PREDICT_TLT = {"num_hidden_layers": 6,
 
 # training
 tfrec_train = "{}/data/output/records.tf".format(MODEL_PATH)
-EPOCHS = 100
+EPOCHS = 2
 SAVE_CHECKPOINT_STEPS = 500
