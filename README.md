@@ -115,6 +115,7 @@ conda install -c apple tensorflow-deps
 python preprocess_fasttext_bin.py
 python preprocess_fasttext_vec.py
 python cats_preprocess.py data/input data/output --train 1
+python cats_preprocess.py data/input data/output
 python cats_train.py
 ```
 

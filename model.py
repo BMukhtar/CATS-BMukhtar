@@ -7,7 +7,7 @@ import config
 def model_fn(features, labels, mode, params):
   """Defines the hierarchical transformer model for segmentation and coherence"""
 
-  print("Training the model: " + config.MODEL_TYPE.upper())
+  print("Using the model: " + config.MODEL_TYPE.upper())
   print("Defining the model...")
   with tf.compat.v1.variable_scope("model"):
     embeddings = params["wembs"].astype(np.float32)
