@@ -5,6 +5,7 @@ from nltk.tokenize import sent_tokenize
 import random
 import tensorflow as tf
 from sys import stdin
+from tqdm import tqdm
 
 def tokenize(string):
   return WordPunctTokenizer().tokenize(string)
@@ -24,7 +25,7 @@ def create_instances(dir_path, vocab, records_path, test = False, title_start = 
     if test:
       doc_blocks = []
 
-    for f in files:
+    for f in tqdm(files):
       cnt += 1
       print("File: " + str(cnt))
       records, rb_num, windows = process_document(f, vocab, test = test, title_start = title_start, ssplit = ssplit)

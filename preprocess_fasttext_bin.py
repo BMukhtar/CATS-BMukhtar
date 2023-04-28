@@ -6,7 +6,7 @@ import config
 model = fasttext.load_model(config.bin_path_en)
 vocab = {}
 vectors = []
-max_tokens = 500000
+max_tokens = 300000
 for word in model.words[:max_tokens]:
     vocab[word] = len(vocab)
     vectors.append(model[word])

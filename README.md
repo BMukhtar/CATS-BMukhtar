@@ -111,11 +111,19 @@ For the training of the models, it is recommended to have access to Graphical Pr
 conda install -c apple tensorflow-deps
 ```
 
+
 ```sh
 python preprocess_fasttext_bin.py
 python preprocess_fasttext_vec.py
 python cats_preprocess.py data/input data/output --train 1
 python cats_preprocess.py data/input data/output
+python cats_train.py
+```
+
+production
+```sh
+python preprocess_fasttext_bin.py
+python cats_preprocess.py data/input/wiki_727 data/output --train 1
 python cats_train.py
 ```
 
