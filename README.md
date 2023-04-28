@@ -127,3 +127,10 @@ python cats_preprocess.py data/input/wiki_727 data/output --train 1
 python cats_train.py
 ```
 
+mac with m1
+```sh
+conda install -c apple tensorflow-deps
+python -m pip install tensorflow-macos
+python -m pip install tensorflow-metal
+```
+
