@@ -25,7 +25,7 @@ def model_fn(features, labels, mode, params):
     input_fake = tf.reshape(features["fake_seqs"], [config.batch_size * config.sent_window, config.max_sent_len])
     true_seq = tf.nn.embedding_lookup(params=embeddings, ids=input_true)
     fake_seq = tf.nn.embedding_lookup(params=embeddings, ids=input_fake)
- 
+
     b_sent_pos_embs = tf.nn.embedding_lookup(params=sent_pos_embs, ids=np.tile(list(range(config.max_sent_len)), (config.batch_size * config.sent_window, 1)))
     b_par_pos_embs = tf.nn.embedding_lookup(params=par_pos_embs, ids=np.tile(np.reshape(list(range(config.max_sent_len * config.sent_window)), (config.sent_window, config.max_sent_len)), (config.batch_size, 1)))
     
