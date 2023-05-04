@@ -134,3 +134,10 @@ python -m pip install tensorflow-macos
 python -m pip install tensorflow-metal
 ```
 
+```sh
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+conda install pytorch::pytorch torchvision torchaudio -c pytorch
+conda install transformers datasets tiktoken wandb tqdm
+conda install sentence-transformers
+```
+
