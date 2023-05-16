@@ -113,10 +113,9 @@ conda install -c apple tensorflow-deps
 
 
 ```sh
-python preprocess_fasttext_bin.py
 python preprocess_fasttext_vec.py
 python cats_preprocess.py data/input data/output --train 1
-python cats_preprocess.py data/input data/output
+python cats_preprocess.py data/input/data data/output
 python cats_train.py
 ```
 
@@ -125,6 +124,13 @@ production
 python preprocess_fasttext_bin.py
 python cats_preprocess.py data/input/wiki_727 data/output --train 1
 python cats_train.py
+```
+
+predict
+```sh
+python preprocess_fasttext_bin.py
+python cats_preprocess.py data/input/data data/preprocessed/test
+python cats_predict.py data/preprocessed/test data/output/predicted
 ```
 
 mac with m1
